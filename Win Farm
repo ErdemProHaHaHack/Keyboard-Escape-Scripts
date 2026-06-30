@@ -2,7 +2,7 @@ local v0 = game.Players.LocalPlayer
 local key_required = "myfirstspecialgamescript"
 local TweenService = game:GetService("TweenService")
 
--- [1] TİP EKRANI (5 Saniye)
+-- [1] TİP EKRANI (Sıralı Akış)
 local TipGui = Instance.new("ScreenGui")
 TipGui.Name = "TipScreen"
 TipGui.Parent = v0:WaitForChild("PlayerGui")
@@ -32,7 +32,7 @@ TweenService:Create(TS_Stroke, TweenInfo.new(1), {Transparency = 1}):Play()
 task.wait(1)
 TipGui:Destroy()
 
--- [2] KEY SİSTEMİ
+-- [2] KEY KONTROLÜ (Sıralı Akış)
 local key_verified = false
 if readfile then
     local success, content = pcall(function() return readfile("farm script key.txt") end)
@@ -78,22 +78,21 @@ if not key_verified then
     KeyBtn.Parent = KeyFrame
     Instance.new("UICorner", KeyBtn).CornerRadius = UDim.new(0, 8)
 
-    local verified = false
+    local verified_flag = false
     KeyBtn.MouseButton1Click:Connect(function()
         if KeyInput.Text == key_required then
             if writefile then writefile("farm script key.txt", "Key: " .. key_required) end
-            verified = true
+            verified_flag = true
             KeyGui:Destroy()
         else
             KeyInput.Text = ""
             KeyInput.PlaceholderText = "INVALID KEY!"
         end
     end)
-
-    repeat task.wait() until verified == true
+    repeat task.wait() until verified_flag == true
 end
 
--- [3] ANA FARM SİSTEMİ (Buradan itibaren düz akış başlıyor)
+-- [3] ANA FARM SİSTEMİ (Düz Akış - Fonksiyonsuz)
 local v1=v0.Character or v0.CharacterAdded:Wait() 
 local v2=v1:WaitForChild("HumanoidRootPart")
 local v3=false
@@ -151,10 +150,8 @@ v45.MouseEnter:Connect(function()
     TweenService:Create(v45, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(0, 255, 150), Size = UDim2.new(0, 160, 0, 45), Position = UDim2.new(0.5, -80, 0, 87.5)}):Play()
 end)
 v45.MouseLeave:Connect(function()
-    TweenService:Create(v45, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(0, 180, 100), Size = UDim2.new(0, 150, 0, 40), Position = UDim2.new(0.5, -75, 0, 90)}):Play()
+    TweenService:Create(v45, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(0, 180, 100), Size, UDim2.new(0, 150, 0, 40), Position = UDim2.new(0.5, -75, 0, 90)}):Play()
 end)
-
-local v54=Instance.new("TextLabel");v54.Size=UDim2.new(1, 0, 0, 20);v54.Position=UDim2.new(0, 0, 0, 135);v54.BackgroundTransparency=1;v54.Text="F4 - start/stop | F6 - hide";v54.TextColor3=Color3.fromRGB(150, 150, 150);v54.TextSize=12;v54.Font=Enum.Font.Gotham;v54.ZIndex = 2;v54.Parent=v13;
 
 local function v64() 
     local v72=0;local v73;while true do if (v72==(0 -0)) then v73=0;while true do if (3==v73) then v34.TextColor3=Color3.fromRGB(100,3 + 252 ,79 + 21 );print("Farm started");v73=1059 -(87 + 968) ;end if (v73==(4 -3)) then v4=v2.Position;v45.Text="⏹ STOP";v73=2 + 0 ;end if ((8 -4)==v73) then v5=task.spawn(function() while v3 do if v7() then task.wait(1413.5 -(447 + 966) );end task.wait(2 -1 );end end);break;end if (v73==(1819 -(1703 + 114))) then v45.BackgroundColor3=Color3.fromRGB(901 -(376 + 325) ,81 -31 ,153 -103 );v34.Text="Status: Farming...";v73=3;end if (v73==(0 + 0)) then if v3 then return;end v3=true;v73=2 -1 ;end end break;end end end 

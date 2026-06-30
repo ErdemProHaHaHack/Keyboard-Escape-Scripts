@@ -1,158 +1,90 @@
---[[ WIN FARM ULTIMATE - Particle Edition - Tip: 5 Seconds - Key: Saved
-to file - Logic: Original untouched (v1-v8) - UI: Particle Background & Modern
-Design ]]
+local v0 = game.Players.LocalPlayer
+local key_required = "myfirstspecialgamescript"
+local TweenService = game:GetService("TweenService")
 
-local v0 = game.Players.LocalPlayer local key_required =
-"myfirstspecialgamescript" local TweenService = game:GetService("TweenService")
+-- [1] FONKSİYONLAR (Hata almamak için en önce tanımlanır)
+local function RunMainScript()
+    local v1=v0.Character or v0.CharacterAdded:Wait() ;local v2=v1:WaitForChild("HumanoidRootPart");local v3=false;local v4=v2.Position;local v5=nil;
 
--- 1. MAIN FARM FUNCTION (Senin verdiğin kodun modifiye edilmiş hali)
-
-function RunMainScript() -- Orijinal değişkenlerin (HİÇ DEĞİŞMEDİ) local
-v1=v0.Character or v0.CharacterAdded:Wait() ;local
-v2=v1:WaitForChild("HumanoidRootPart");local v3=false;local v4=v2.Position;local
-v5=nil;
-
--- Orijinal Arama Fonksiyonu (v6)
-local function v6() local v67=0 + 0 ;local v68;while true do if (v67==(0 -0)) then v68=0;while true do if (v68==0) then for v90,v91 in pairs(workspace:GetDescendants()) do if v91:IsA("BasePart") then local v93=v91.Name:lower();if (v93:find("reward") or v93:find("bonus") or v93:find("chest") or v93:find("win") or v93:find("prize") or v93:find("collect") or v93:find("250k")) then return v91;end end end return nil;end end break;end end end 
-
--- Orijinal Işınlanma Fonksiyonu (v7)
-local function v7() local v69=0 + 0 ;local v70;while true do if (v69==(0 -0)) then v70=v6();if v70 then local v83=0;while true do if (v83==0) then v2.CFrame=CFrame.new(v70.Position + Vector3.new(952 -(802 + 150) , -0.5,0) );return true;end end end v69=1;end if (v69==(2 -1)) then return false;end end end 
-
--- Orijinal Başlangıca Dönüş (v8)
-local function v8() v2.CFrame=CFrame.new(v4);end 
-
--- ULTRA HAVALI UI (Burayı modernize ettim)
-local v9=Instance.new("ScreenGui");v9.Name="FarmMenu";v9.ResetOnSpawn=true;v9.Parent=v0:WaitForChild("PlayerGui");
-local v13=Instance.new("Frame");v13.Size=UDim2.new(0, 260, 0, 170);v13.Position=UDim2.new(0, 120, 0, 50);v13.BackgroundColor3=Color3.fromRGB(10, 10, 15);v13.BackgroundTransparency=0.1;v13.BorderSizePixel=0;v13.Active=true;v13.Draggable=true;v13.Parent=v9;
-
-local MC = Instance.new("UICorner"); MC.CornerRadius = UDim.new(0, 15); MC.Parent = v13
-local MS = Instance.new("UIStroke"); MS.Thickness = 2; MS.Color = Color3.fromRGB(0, 160, 255); MS.Parent = v13
-
--- HAREKETLİ PARTICLE SİSTEMİ
-local function createParticle()
-    local p = Instance.new("Frame")
-    p.Size = UDim2.new(0, 4, 0, 4)
-    p.Position = UDim2.new(math.random(), 0, math.random(), 0)
-    p.BackgroundColor3 = Color3.fromRGB(0, 180, 255)
-    p.BorderSizePixel = 0
-    p.ZIndex = 0
-    p.Parent = v13
-    Instance.new("UICorner", p).CornerRadius = UDim.new(1, 0)
+    local function v6() local v67=0 + 0 ;local v68;while true do if (v67==(0 -0)) then v68=0;while true do if (v68==0) then for v90,v91 in pairs(workspace:GetDescendants()) do if v91:IsA("BasePart") then local v93=v91.Name:lower();if (v93:find("reward") or v93:find("bonus") or v93:find("chest") or v93:find("win") or v93:find("prize") or v93:find("collect") or v93:find("250k")) then return v91;end end end return nil;end end break;end end end end 
     
-    local goal = {Position = UDim2.new(math.random(), 0, math.random(), 0), BackgroundTransparency = 1}
-    local tween = TweenService:Create(p, TweenInfo.new(math.random(2, 4), Enum.EasingStyle.Linear), goal)
-    tween:Play()
-    tween.Completed:Connect(function() p:Destroy() end)
+    local function v7() local v69=0 + 0 ;local v70;while true do if (v69==(0 -0)) then v70=v6();if v70 then local v83=0;while true do if (v83==0) then v2.CFrame=CFrame.new(v70.Position + Vector3.new(952 -(802 + 150) , -0.5,0) );return true;end end end v69=1;end if (v69==(2 -1)) then return false;end end end end 
+    
+    local function v8() v2.CFrame=CFrame.new(v4);end 
+
+    -- SADE NEON UI
+    local v9=Instance.new("ScreenGui");v9.Name="FarmMenu";v9.ResetOnSpawn=true;v9.Parent=v0:WaitForChild("PlayerGui");
+    local v13=Instance.new("Frame");v13.Size=UDim2.new(0, 240, 0, 150);v13.Position=UDim2.new(0, 120, 0, 50);v13.BackgroundColor3=Color3.fromRGB(15, 15, 20);v13.BorderSizePixel=0;v13.Active=true;v13.Draggable=true;v13.Parent=v9;
+    
+    local MC = Instance.new("UICorner"); MC.CornerRadius = UDim.new(0, 12); MC.Parent = v13
+    local MS = Instance.new("UIStroke"); MS.Thickness = 2; MS.Color = Color3.fromRGB(0, 170, 255); MS.Parent = v13
+
+    local v22=Instance.new("TextLabel");v22.Size=UDim2.new(1, 0, 0, 35);v22.BackgroundColor3=Color3.fromRGB(25, 25, 35);v22.Text="⚡ WIN FARM";v22.TextColor3=Color3.fromRGB(255, 255, 255);v22.TextSize=18;v22.Font=Enum.Font.GothamBold;v22.Parent=v13;
+    Instance.new("UICorner", v22).CornerRadius = UDim.new(0, 12)
+
+    local v34=Instance.new("TextLabel");v34.Size=UDim2.new(1, 0, 0, 30);v34.Position=UDim2.new(0, 0, 0, 40);v34.BackgroundTransparency=1;v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200, 200, 200);v34.TextSize=14;v34.Font=Enum.Font.Gotham;v34.Parent=v13;
+
+    local v45=Instance.new("TextButton");v45.Size=UDim2.new(0, 120, 0, 35);v45.Position=UDim2.new(0.5, -60, 0, 80);v45.BackgroundColor3=Color3.fromRGB(0, 180, 100);v45.Text="▶ START";v45.TextColor3=Color3.fromRGB(255, 255, 255);v45.TextSize=16;v45.Font=Enum.Font.GothamBold;v45.Parent=v13;
+    Instance.new("UICorner", v45).CornerRadius = UDim.new(0, 8)
+
+    local v54=Instance.new("TextLabel");v54.Size=UDim2.new(1, 0, 0, 20);v54.Position=UDim2.new(0, 0, 0, 125);v54.BackgroundTransparency=1;v54.Text="F4 - start/stop | F6 - hide";v54.TextColor3=Color3.fromRGB(150, 150, 150);v54.TextSize=12;v54.Font=Enum.Font.Gotham;v54.Parent=v13;
+
+    local function v64() local v72=0;local v73;while true do if (v72==(0 -0)) then v73=0;while true do if (3==v73) then v34.TextColor3=Color3.fromRGB(100,3 + 252 ,79 + 21 );print("Farm started");v73=1059 -(87 + 968) ;end if (v73==(4 -3)) then v4=v2.Position;v45.Text="⏹ STOP";v73=2 + 0 ;end if ((8 -4)==v73) then v5=task.spawn(function() while v3 do if v7() then task.wait(1413.5 -(447 + 966) );end v8();task.wait(2 -1 );end end);break;end if (v73==(1819 -(1703 + 114))) then v45.BackgroundColor3=Color3.fromRGB(901 -(376 + 325) ,81 -31 ,153 -103 );v34.Text="Status: Farming...";v73=3;end if (v73==(0 + 0)) then if v3 then return;end v3=true;v73=2 -1 ;end end break;end end end 
+    local function v65() v3=false;if v5 then task.cancel(v5);v5=nil;end v45.Text="▶ START";v45.BackgroundColor3=Color3.fromRGB(0 + 0 ,1380 -(1123 + 57) ,0);v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200,163 + 37 ,200);print("Farm stopped");end 
+
+    v45.MouseButton1Click:Connect(function() if v3 then v65();else v64();end end);
+
+    game:GetService("UserInputService").InputBegan:Connect(function(v78,v79) 
+        local v80=254 -(163 + 91) ;while true do if (v80==1) then if (v78.KeyCode==Enum.KeyCode.F6) then v13.Visible= not v13.Visible;end break;end if (0==v80) then if v79 then return;end if (v78.KeyCode==Enum.KeyCode.F4) then v45.MouseButton1Click:Fire();end v80=1;end end end)
 end
 
-task.spawn(function()
-    while v13.Parent do
-        createParticle()
-        task.wait(0.2)
+local function checkKey()
+    if readfile then
+        local success, content = pcall(function() return readfile("farm script key.txt") end)
+        if success and content == "Key: " .. key_required then return true end
     end
-end)
-
-local v22=Instance.new("TextLabel");v22.Size=UDim2.new(1, 0, 0, 40);v22.BackgroundColor3=Color3.fromRGB(20, 20, 30);v22.BackgroundTransparency=0;v22.Text="⚡ WIN FARM PRO";v22.TextColor3=Color3.fromRGB(255, 255, 255);v22.TextSize=18;v22.Font=Enum.Font.GothamBold;v22.TextXAlignment=Enum.TextXAlignment.Center;v22.ZIndex = 2;v22.Parent=v13;
-local TC = Instance.new("UICorner"); TC.CornerRadius = UDim.new(0, 15); TC.Parent = v22
-
-local v34=Instance.new("TextLabel");v34.Size=UDim2.new(1, 0, 0, 30);v34.Position=UDim2.new(0, 0, 0, 45);v34.BackgroundTransparency=1;v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200, 200, 200);v34.TextSize=14;v34.Font=Enum.Font.Gotham;v34.TextXAlignment=Enum.TextXAlignment.Center;v34.ZIndex = 2;v34.Parent=v13;
-
-local v45=Instance.new("TextButton");v45.Size=UDim2.new(0, 140, 0, 40);v45.Position=UDim2.new(0.5, -70, 0, 90);v45.BackgroundColor3=Color3.fromRGB(0, 180, 100);v45.Text="▶ START";v45.TextColor3=Color3.fromRGB(255, 255, 255);v45.TextSize=16;v45.Font=Enum.Font.GothamBold;v45.ZIndex = 2;v45.Parent=v13;
-local BC = Instance.new("UICorner"); BC.CornerRadius = UDim.new(0, 10); BC.Parent = v45
-
-local v54=Instance.new("TextLabel");v54.Size=UDim2.new(1, 0, 0, 20);v54.Position=UDim2.new(0, 0, 0, 135);v54.BackgroundTransparency=1;v54.Text="F4 - start/stop | F6 - hide";v54.TextColor3=Color3.fromRGB(150, 150, 150);v54.TextSize=12;v54.Font=Enum.Font.Gotham;v54.TextXAlignment=Enum.TextXAlignment.Center;v54.ZIndex = 2;v54.Parent=v13;
-
--- Orijinal Kontrol Mantığı (HİÇ DEĞİŞMEDİ)
-local function v64() local v72=0;local v73;while true do if (v72==(0 -0)) then v73=0;while true do if (3==v73) then v34.TextColor3=Color3.fromRGB(100,3 + 252 ,79 + 21 );print("Farm started");v73=1059 -(87 + 968) ;end if (v73==(4 -3)) then v4=v2.Position;v45.Text="⏹ STOP";v73=2 + 0 ;end if ((8 -4)==v73) then v5=task.spawn(function() while v3 do if v7() then task.wait(1413.5 -(447 + 966) );end v8();task.wait(2 -1 );end end);break;end if (v73==(1819 -(1703 + 114))) then v45.BackgroundColor3=Color3.fromRGB(901 -(376 + 325) ,81 -31 ,153 -103 );v34.Text="Status: Farming...";v73=3;end if (v73==(0 + 0)) then if v3 then return;end v3=true;v73=2 -1 ;end end break;end end end 
-local function v65() v3=false;if v5 then task.cancel(v5);v5=nil;end v45.Text="▶ START";v45.BackgroundColor3=Color3.fromRGB(0 + 0 ,1380 -(1123 + 57) ,0);v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200,163 + 37 ,200);print("Farm stopped");end 
-
-v45.MouseButton1Click:Connect(function() if v3 then v65();else v64();end end);
-
-local v66=game:GetService("UserInputService");
-v66.InputBegan:Connect(function(v78,v79) local v80=254 -(163 + 91) ;while true do if (v80==1) then if (v78.KeyCode==Enum.KeyCode.F6) then v13.Visible= not v13.Visible;end break;end if (0==v80) then if v79 then return;end if (v78.KeyCode==Enum.KeyCode.F4) then v45.MouseButton1Click:Fire();end v80=1;end end end);
-print("Win Farm Pro Loaded.");
-
+    return false
 end
 
--- 2. KEY & AUTH SYSTEM
+local function ShowKeySystem()
+    local KeyGui = Instance.new("ScreenGui"); KeyGui.Name = "KeyS"; KeyGui.Parent = v0:WaitForChild("PlayerGui")
+    local KeyFrame = Instance.new("Frame"); KeyFrame.Size = UDim2.new(0, 300, 0, 160); KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -80); KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25); KeyFrame.Parent = KeyGui
+    Instance.new("UICorner", KeyFrame).CornerRadius = UDim.new(0, 12)
+    local KS = Instance.new("UIStroke", KeyFrame) KS.Thickness = 2 KS.Color = Color3.fromRGB(60, 60, 80)
+    local KeyTitle = Instance.new("TextLabel"); KeyTitle.Size = UDim2.new(1, 0, 0, 40); KeyTitle.Text = "🔑 ACCESS KEY"; KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255); KeyTitle.BackgroundColor3 = Color3.fromRGB(30, 30, 40); KeyTitle.Font = Enum.Font.GothamBold; KeyTitle.Parent = KeyFrame
+    Instance.new("UICorner", KeyTitle).CornerRadius = UDim.new(0, 12)
+    local KeyInput = Instance.new("TextBox"); KeyInput.Size = UDim2.new(0, 220, 0, 40); KeyInput.Position = UDim2.new(0.5, -110, 0, 55); KeyInput.PlaceholderText = "Enter key..."; KeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 50); KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255); KeyInput.Parent = KeyFrame
+    Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
+    local KeyBtn = Instance.new("TextButton"); KeyBtn.Size = UDim2.new(0, 120, 0, 35); KeyBtn.Position = UDim2.new(0.5, -60, 0, 110); KeyBtn.Text = "Verify"; KeyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215); KeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255); KeyBtn.Font = Enum.Font.GothamBold; KeyBtn.Parent = KeyFrame
+    Instance.new("UICorner", KeyBtn).CornerRadius = UDim.new(0, 8)
 
-local function checkKey() if readfile then local success, content =
-pcall(function() return readfile("farm script key.txt") end) if success and
-content == "Key: " .. key_required then return true end end return false end
+    KeyBtn.MouseButton1Click:Connect(function()
+        if KeyInput.Text == key_required then
+            if writefile then writefile("farm script key.txt", "Key: " .. key_required) end
+            KeyGui:Destroy()
+            RunMainScript()
+        else
+            KeyInput.Text = ""; KeyInput.PlaceholderText = "INVALID KEY!"
+        end
+    end)
+end
 
-local function ShowKeySystem() local KeyGui = Instance.new("ScreenGui")
-KeyGui.Name = "KeySystem" KeyGui.Parent = v0:WaitForChild("PlayerGui")
+-- BAŞLATICI
+local TipGui = Instance.new("ScreenGui"); TipGui.Name = "TipS"; TipGui.Parent = v0:WaitForChild("PlayerGui")
+local TipFrame = Instance.new("Frame"); TipFrame.Size = UDim2.new(0, 400, 0, 100); TipFrame.Position = UDim2.new(0.5, -200, 0.4, -50); TipFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25); TipFrame.Parent = TipGui
+Instance.new("UICorner", TipFrame).CornerRadius = UDim.new(0, 15)
+local TS_S = Instance.new("UIStroke", TipFrame) TS_S.Thickness = 2 TS_S.Color = Color3.fromRGB(100, 100, 200)
+local TipText = Instance.new("TextLabel"); TipText.Size = UDim2.new(1, 0, 1, 0); TipText.Text = "Tip: If you die, execute script again"; TipText.TextColor3 = Color3.fromRGB(200, 200, 220); TipText.TextSize = 18; TipText.Font = Enum.Font.GothamMedium; TipText.BackgroundTransparency = 1; TipText.Parent = TipFrame
 
-local KeyFrame = Instance.new("Frame")
-KeyFrame.Size = UDim2.new(0, 300, 0, 160)
-KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -80)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-KeyFrame.Parent = KeyGui
-Instance.new("UICorner", KeyFrame).CornerRadius = UDim.new(0, 12)
-local KS = Instance.new("UIStroke", KeyFrame) KS.Thickness = 2 KS.Color = Color3.fromRGB(60, 60, 80)
-
-local KeyTitle = Instance.new("TextLabel")
-KeyTitle.Size = UDim2.new(1, 0, 0, 40)
-KeyTitle.Text = "🔑 ACCESS KEY"
-KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyTitle.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-KeyTitle.Font = Enum.Font.GothamBold
-KeyTitle.Parent = KeyFrame
-Instance.new("UICorner", KeyTitle).CornerRadius = UDim.new(0, 12)
-
-local KeyInput = Instance.new("TextBox")
-KeyInput.Size = UDim2.new(0, 220, 0, 40)
-KeyInput.Position = UDim2.new(0.5, -110, 0, 55)
-KeyInput.PlaceholderText = "Enter key..."
-KeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.Parent = KeyFrame
-Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
-
-local KeyBtn = Instance.new("TextButton")
-KeyBtn.Size = UDim2.new(0, 120, 0, 35)
-KeyBtn.Position = UDim2.new(0.5, -60, 0, 110)
-KeyBtn.Text = "Verify"
-KeyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
-KeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyBtn.Font = Enum.Font.GothamBold
-KeyBtn.Parent = KeyFrame
-Instance.new("UICorner", KeyBtn).CornerRadius = UDim.new(0, 8)
-
-KeyBtn.MouseButton1Click:Connect(function()
-    if KeyInput.Text == key_required then
-        if writefile then writefile("farm script key.txt", "Key: " .. key_required) end
-        KeyGui:Destroy()
+task.delay(5, function()
+    TweenService:Create(TipFrame, TweenInfo.new(1), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(TipText, TweenInfo.new(1), {TextTransparency = 1}):Play()
+    TweenService:Create(TS_S, TweenInfo.new(1), {Transparency = 1}):Play()
+    task.wait(1)
+    TipGui:Destroy()
+    if checkKey() then
         RunMainScript()
     else
-        KeyInput.Text = ""
-        KeyInput.PlaceholderText = "INVALID KEY!"
+        ShowKeySystem()
     end
 end)
-
-end
-
--- 3. ENTRY POINT (Tip 5s -> Key -> Run)
-
-local TipGui = Instance.new("ScreenGui") TipGui.Name = "TipScreen" TipGui.Parent
-= v0:WaitForChild("PlayerGui")
-
-local TipFrame = Instance.new("Frame") TipFrame.Size = UDim2.new(0, 400, 0, 100)
-TipFrame.Position = UDim2.new(0.5, -200, 0.4, -50) TipFrame.BackgroundColor3 =
-Color3.fromRGB(20, 20, 25) TipFrame.BorderSizePixel = 0 TipFrame.Parent = TipGui
-Instance.new("UICorner", TipFrame).CornerRadius = UDim.new(0, 15) local TS =
-Instance.new("UIStroke", TipFrame) TS.Thickness = 2 TS.Color =
-Color3.fromRGB(100, 100, 200)
-
-local TipText = Instance.new("TextLabel") TipText.Size = UDim2.new(1, 0, 1, 0)
-TipText.Text = "Tip: If you die, execute script again" TipText.TextColor3 =
-Color3.fromRGB(200, 200, 220) TipText.TextSize = 18 TipText.Font =
-Enum.Font.GothamMedium TipText.BackgroundTransparency = 1 TipText.Parent =
-TipFrame
-
--- sequence start task.delay(5, function() TweenService:Create(TipFrame,
-TweenInfo.new(1), {BackgroundTransparency = 1}):Play()
-TweenService:Create(TipText, TweenInfo.new(1), {TextTransparency = 1}):Play()
-TweenService:Create(TS, TweenInfo.new(1), {Transparency = 1}):Play()
-task.wait(1) TipGui:Destroy() if checkKey() then RunMainScript() else
-ShowKeySystem() end end)

@@ -1,178 +1,152 @@
---[[ 
-    REWARD FARMER - Optimized & Modernized
-    F4: Start/Stop | F6: Hide/Show UI
-]]
+local v0 = game.Players.LocalPlayer
+local key_required = "myfirstspecialgamescript"
+local TweenService = game:GetService("TweenService")
 
-local Player = game.Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
+-- TIP SCREEN
+local TipGui = Instance.new("ScreenGui")
+TipGui.Name = "TipScreen"
+TipGui.Parent = v0:WaitForChild("PlayerGui")
 
--- Variables
-local character = Player.Character or Player.CharacterAdded:Wait()
-local rootPart = character:WaitForChild("HumanoidRootPart")
-local isFarming = false
-local savedPosition = rootPart.Position
-local farmThread = nil
+local TipFrame = Instance.new("Frame")
+TipFrame.Size = UDim2.new(0, 400, 0, 100)
+TipFrame.Position = UDim2.new(0.5, -200, 0.4, -50)
+TipFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+TipFrame.BorderSizePixel = 0
+TipFrame.Parent = TipGui
 
--- Update character reference on respawn (Fixes the "breaking on death" issue)
-Player.CharacterAdded:Connect(function(newChar)
-    character = newChar
-    rootPart = newChar:WaitForChild("HumanoidRootPart")
-end)
+local TipCorner = Instance.new("UICorner")
+TipCorner.CornerRadius = UDim.new(0, 15)
+TipCorner.Parent = TipFrame
 
--- Search for reward parts
-local function findReward()
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") then
-            local name = obj.Name:lower()
-            if name:find("reward") or name:find("bonus") or name:find("chest") or 
-               name:find("win") or name:find("prize") or name:find("collect") or name:find("250k") then
-                return obj
-            end
-        end
-    end
-    return nil
-end
+local TipStroke = Instance.new("UIStroke")
+TipStroke.Thickness = 2
+TipStroke.Color = Color3.fromRGB(80, 80, 110)
+TipStroke.Parent = TipFrame
 
--- Teleport Logic
-local function teleportToReward()
-    local target = findReward()
-    if target then
-        rootPart.CFrame = CFrame.new(target.Position + Vector3.new(0, 2, 0))
-        return true
-    end
-    return false
-end
+local TipText = Instance.new("TextLabel")
+TipText.Size = UDim2.new(1, 0, 1, 0)
+TipText.Text = "Tip: If you die, execute script again"
+TipText.TextColor3 = Color3.fromRGB(200, 200, 220)
+TipText.TextSize = 18
+TipText.Font = Enum.Font.GothamMedium
+TipText.BackgroundTransparency = 1
+TipText.Parent = TipFrame
 
-local function teleportBack()
-    rootPart.CFrame = CFrame.new(savedPosition)
-end
+-- KEY SYSTEM UI (Hidden initially)
+local KeyGui = Instance.new("ScreenGui")
+KeyGui.Name = "KeySystem"
+KeyGui.Enabled = false
+KeyGui.Parent = v0:WaitForChild("PlayerGui")
 
--- UI DESIGN
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ModernFarmGui"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+local KeyFrame = Instance.new("Frame")
+KeyFrame.Size = UDim2.new(0, 300, 0, 160)
+KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -80)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+KeyFrame.BorderSizePixel = 0
+KeyFrame.Parent = KeyGui
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 250, 0, 160)
-MainFrame.Position = UDim2.new(0.5, -125, 0.4, -80)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.Parent = ScreenGui
+local KeyCorner = Instance.new("UICorner")
+KeyCorner.CornerRadius = UDim.new(0, 12)
+KeyCorner.Parent = KeyFrame
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = MainFrame
+local KeyStroke = Instance.new("UIStroke")
+KeyStroke.Thickness = 2
+KeyStroke.Color = Color3.fromRGB(60, 60, 80)
+KeyStroke.Parent = KeyFrame
 
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Thickness = 2
-UIStroke.Color = Color3.fromRGB(60, 60, 80)
-UIStroke.Parent = MainFrame
-
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
-Title.Text = "⚡ WIN FARMER"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 18
-Title.Font = Enum.Font.GothamBold
-Title.Parent = MainFrame
+local KeyTitle = Instance.new("TextLabel")
+KeyTitle.Size = UDim2.new(1, 0, 0, 40)
+KeyTitle.Text = "🔑 ACCESS KEY"
+KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyTitle.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+KeyTitle.Font = Enum.Font.GothamBold
+KeyTitle.TextSize = 16
+KeyTitle.Parent = KeyFrame
 
 local TitleCorner = Instance.new("UICorner")
-TitleCorner.CornerRadius = UDim.new(0, 10)
-TitleCorner.Parent = Title
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = KeyTitle
 
-local StatusLabel = Instance.new("TextLabel")
-StatusLabel.Size = UDim2.new(1, 0, 0, 30)
-StatusLabel.Position = UDim2.new(0, 0, 0, 50)
-StatusLabel.BackgroundTransparency = 1
-StatusLabel.Text = "Status: Stopped"
-StatusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-StatusLabel.TextSize = 14
-StatusLabel.Font = Enum.Font.Gotham
-StatusLabel.Parent = MainFrame
+local KeyInput = Instance.new("TextBox")
+KeyInput.Size = UDim2.new(0, 220, 0, 40)
+KeyInput.Position = UDim2.new(0.5, -110, 0, 55)
+KeyInput.PlaceholderText = "Enter key..."
+KeyInput.Text = ""
+KeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyInput.Font = Enum.Font.Gotham
+KeyInput.Parent = KeyFrame
 
-local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Size = UDim2.new(0, 120, 0, 40)
-ToggleBtn.Position = UDim2.new(0.5, -60, 0, 90)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 100)
-ToggleBtn.Text = "START"
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.TextSize = 16
-ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.Parent = MainFrame
+local InputCorner = Instance.new("UICorner")
+InputCorner.CornerRadius = UDim.new(0, 8)
+InputCorner.Parent = KeyInput
+
+local KeyBtn = Instance.new("TextButton")
+KeyBtn.Size = UDim2.new(0, 120, 0, 35)
+KeyBtn.Position = UDim2.new(0.5, -60, 0, 110)
+KeyBtn.Text = "Verify"
+KeyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+KeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyBtn.Font = Enum.Font.GothamBold
+KeyBtn.Parent = KeyFrame
 
 local BtnCorner = Instance.new("UICorner")
 BtnCorner.CornerRadius = UDim.new(0, 8)
-BtnCorner.Parent = ToggleBtn
+BtnCorner.Parent = KeyBtn
 
-local InfoLabel = Instance.new("TextLabel")
-InfoLabel.Size = UDim2.new(1, 0, 0, 20)
-InfoLabel.Position = UDim2.new(0, 0, 0, 130)
-InfoLabel.BackgroundTransparency = 1
-InfoLabel.Text = "F4: Toggle | F6: Hide UI"
-InfoLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-InfoLabel.TextSize = 12
-InfoLabel.Font = Enum.Font.Gotham
-InfoLabel.Parent = MainFrame
-
--- Logic Functions
-local function stopFarm()
-    isFarming = false
-    if farmThread then 
-        task.cancel(farmThread) 
-        farmThread = nil 
-    end
-    ToggleBtn.Text = "START"
-    ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 100)
-    StatusLabel.Text = "Status: Stopped"
-    StatusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    print("Farm Stopped.")
-end
-
-local function startFarm()
-    if isFarming then return end
-    isFarming = true
-    savedPosition = rootPart.Position
-    
-    ToggleBtn.Text = "STOP"
-    ToggleBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
-    StatusLabel.Text = "Status: Farming..."
-    StatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-    print("Farm Started.")
-    
-    farmThread = task.spawn(function()
-        while isFarming do
-            if teleportToReward() then
-                task.wait(0.5) -- Wait at reward
-            end
-            teleportBack()
-            task.wait(1) -- Wait before next search
-        end
+-- SEQUENCE LOGIC
+task.delay(10, function()
+    local tween = TweenService:Create(TipFrame, TweenInfo.new(1), {BackgroundTransparency = 1})
+    local textTween = TweenService:Create(TipText, TweenInfo.new(1), {TextTransparency = 1})
+    local strokeTween = TweenService:Create(TipStroke, TweenInfo.new(1), {Transparency = 1})
+    tween:Play()
+    textTween:Play()
+    strokeTween:Play()
+    tween.Completed:Connect(function()
+        TipGui:Destroy()
+        KeyGui.Enabled = true
     end)
-end
+end)
 
--- Button Event
-ToggleBtn.MouseButton1Click:Connect(function()
-    if isFarming then
-        stopFarm()
+KeyBtn.MouseButton1Click:Connect(function()
+    if KeyInput.Text == key_required then
+        if writefile then writefile("farm script key.txt", "Key: " .. key_required) end
+        KeyGui:Destroy()
+        RunMainScript() -- This function is defined in Part 2
     else
-        startFarm()
+        KeyInput.Text = ""
+        KeyInput.PlaceholderText = "INVALID KEY!"
     end
 end)
+function RunMainScript()
+    local v1=v0.Character or v0.CharacterAdded:Wait() ;local v2=v1:WaitForChild("HumanoidRootPart");local v3=false;local v4=v2.Position;local v5=nil;
 
--- Hotkeys
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
+    local function v6() local v67=0 + 0 ;local v68;while true do if (v67==(0 -0)) then v68=0;while true do if (v68==0) then for v90,v91 in pairs(workspace:GetDescendants()) do if v91:IsA("BasePart") then local v93=v91.Name:lower();if (v93:find("reward") or v93:find("bonus") or v93:find("chest") or v93:find("win") or v93:find("prize") or v93:find("collect") or v93:find("250k")) then return v91;end end end return nil;end end break;end end end 
+    local function v7() local v69=0 + 0 ;local v70;while true do if (v69==(0 -0)) then v70=v6();if v70 then local v83=0;while true do if (v83==0) then v2.CFrame=CFrame.new(v70.Position + Vector3.new(952 -(802 + 150) , -0.5,0) );return true;end end end v69=1;end if (v69==(2 -1)) then return false;end end end 
+    local function v8() v2.CFrame=CFrame.new(v4);end 
+
+    local v9=Instance.new("ScreenGui");v9.Name="FarmMenu";v9.ResetOnSpawn=true;v9.Parent=v0:WaitForChild("PlayerGui");
+    local v13=Instance.new("Frame");v13.Size=UDim2.new(0, 240, 0, 150);v13.Position=UDim2.new(0, 120, 0, 50);v13.BackgroundColor3=Color3.fromRGB(25, 25, 35);v13.BackgroundTransparency=0.1;v13.BorderSizePixel=0;v13.Active=true;v13.Draggable=true;v13.Parent=v9;
     
-    if input.KeyCode == Enum.KeyCode.F6 then
-        MainFrame.Visible = not MainFrame.Visible
-    elseif input.KeyCode == Enum.KeyCode.F4 then
-        if isFarming then stopFarm() else startFarm() end
-    end
-end)
+    local MC = Instance.new("UICorner"); MC.CornerRadius = UDim.new(0, 10); MC.Parent = v13
+    local MS = Instance.new("UIStroke"); MS.Thickness = 2; MS.Color = Color3.fromRGB(60, 60, 80); MS.Parent = v13
 
-print("Modern Reward Farm Loaded Successfully!")
+    local v22=Instance.new("TextLabel");v22.Size=UDim2.new(1, 0, 0, 35);v22.BackgroundColor3=Color3.fromRGB(35, 35, 45);v22.BackgroundTransparency=0;v22.Text="⚡ WIN FARM";v22.TextColor3=Color3.fromRGB(255, 255, 255);v22.TextSize=18;v22.Font=Enum.Font.GothamBold;v22.TextXAlignment=Enum.TextXAlignment.Center;v22.Parent=v13;
+    local TC = Instance.new("UICorner"); TC.CornerRadius = UDim.new(0, 10); TC.Parent = v22
+
+    local v34=Instance.new("TextLabel");v34.Size=UDim2.new(1, 0, 0, 30);v34.Position=UDim2.new(0, 0, 0, 40);v34.BackgroundTransparency=1;v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200, 200, 200);v34.TextSize=14;v34.Font=Enum.Font.Gotham;v34.TextXAlignment=Enum.TextXAlignment.Center;v34.Parent=v13;
+
+    local v45=Instance.new("TextButton");v45.Size=UDim2.new(0, 120, 0, 35);v45.Position=UDim2.new(0.5, -60, 0, 80);v45.BackgroundColor3=Color3.fromRGB(0, 180, 100);v45.Text="▶ START";v45.TextColor3=Color3.fromRGB(255, 255, 255);v45.TextSize=16;v45.Font=Enum.Font.GothamBold;v45.Parent=v13;
+    local BC = Instance.new("UICorner"); BC.CornerRadius = UDim.new(0, 8); BC.Parent = v45
+
+    local v54=Instance.new("TextLabel");v54.Size=UDim2.new(1, 0, 0, 20);v54.Position=UDim2.new(0, 0, 0, 120);v54.BackgroundTransparency=1;v54.Text="F4 - start/stop | F6 - hide";v54.TextColor3=Color3.fromRGB(150, 150, 150);v54.TextSize=12;v54.Font=Enum.Font.Gotham;v54.TextXAlignment=Enum.TextXAlignment.Center;v54.Parent=v13;
+
+    local function v64() local v72=0;local v73;while true do if (v72==(0 -0)) then v73=0;while true do if (3==v73) then v34.TextColor3=Color3.fromRGB(100,3 + 252 ,79 + 21 );print("Farm started");v73=1059 -(87 + 968) ;end if (v73==(4 -3)) then v4=v2.Position;v45.Text="⏹ STOP";v73=2 + 0 ;end if ((8 -4)==v73) then v5=task.spawn(function() while v3 do if v7() then task.wait(1413.5 -(447 + 966) );end v8();task.wait(2 -1 );end end);break;end if (v73==(1819 -(1703 + 114))) then v45.BackgroundColor3=Color3.fromRGB(901 -(376 + 325) ,81 -31 ,153 -103 );v34.Text="Status: Farming...";v73=3;end if (v73==(0 + 0)) then if v3 then return;end v3=true;v73=2 -1 ;end end break;end end end 
+    local function v65() v3=false;if v5 then task.cancel(v5);v5=nil;end v45.Text="▶ START";v45.BackgroundColor3=Color3.fromRGB(0 + 0 ,1380 -(1123 + 57) ,0);v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200,163 + 37 ,200);print("Farm stopped");end 
+
+    v45.MouseButton1Click:Connect(function() if v3 then v65();else v64();end end);
+
+    local v66=game:GetService("UserInputService");
+    v66.InputBegan:Connect(function(v78,v79) local v80=254 -(163 + 91) ;while true do if (v80==1) then if (v78.KeyCode==Enum.KeyCode.F6) then v13.Visible= not v13.Visible;end break;end if (0==v80) then if v79 then return;end if (v78.KeyCode==Enum.KeyCode.F4) then v45.MouseButton1Click:Fire();end v80=1;end end end);
+    print("Win Farm Loaded.");
+end

@@ -2,6 +2,8 @@ local v0 = game.Players.LocalPlayer
 local key_required = "myfirstspecialgamescript"
 local TweenService = game:GetService("TweenService")
 
+-- [1] ÖNCE FONKSİYONLARI TANIMLIYORUZ (Böylece Nil Value hatası olmaz)
+
 local function RunMainScript()
     local v1=v0.Character or v0.CharacterAdded:Wait() ;local v2=v1:WaitForChild("HumanoidRootPart");local v3=false;local v4=v2.Position;local v5=nil;
 
@@ -9,6 +11,9 @@ local function RunMainScript()
     
     local function v7() local v69=0 + 0 ;local v70;while true do if (v69==(0 -0)) then v70=v6();if v70 then local v83=0;while true do if (v83==0) then v2.CFrame=CFrame.new(v70.Position + Vector3.new(952 -(802 + 150) , -0.5,0) );return true;end end end v69=1;end if (v69==(2 -1)) then return false;end end end end 
     
+    -- v8 tanımlı kalsın ama aşağıda asla çağırmayacağız.
+    local function v8() v2.CFrame=CFrame.new(v4);end 
+
     local v9=Instance.new("ScreenGui");v9.Name="FarmMenu";v9.ResetOnSpawn=true;v9.Parent=v0:WaitForChild("PlayerGui");
     local v13=Instance.new("Frame");v13.Size=UDim2.new(0, 260, 0, 170);v13.Position=UDim2.new(0, 120, 0, 50);v13.BackgroundColor3=Color3.fromRGB(255, 255, 255);v13.BorderSizePixel=0;v13.Active=true;v13.Draggable=true;v13.Parent=v9;
     
@@ -16,7 +21,7 @@ local function RunMainScript()
     local MS = Instance.new("UIStroke"); MS.Thickness = 3; MS.Color = Color3.fromRGB(0, 200, 255); MS.Parent = v13
 
     local Grad = Instance.new("UIGradient"); Grad.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 15, 25)),
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 20)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 10, 50))
     }; Grad.Rotation = 45; Grad.Parent = v13
 
@@ -58,7 +63,7 @@ local function RunMainScript()
 
     local v54=Instance.new("TextLabel");v54.Size=UDim2.new(1, 0, 0, 20);v54.Position=UDim2.new(0, 0, 0, 135);v54.BackgroundTransparency=1;v54.Text="F4 - start/stop | F6 - hide";v54.TextColor3=Color3.fromRGB(150, 150, 150);v54.TextSize=12;v54.Font=Enum.Font.Gotham;v54.ZIndex = 2;v54.Parent=v13;
 
-    local function v64() local v72=0;local v73;while true do if (v72==(0 -0)) then v73=0;while true do if (3==v73) then v34.TextColor3=Color3.fromRGB(100,3 + 252 ,79 + 21 );print("Farm started");v73=1059 -(87 + 968) ;end if (v73==(4 -3)) then v4=v2.Position;v45.Text="⏹ STOP";v73=2 + 0 ;end if ((8 -4)==v73) then v5=task.spawn(function() while v3 do if v7() then task.wait(1413.5 -(447 + 966) );end task.wait(2 -1 );end end);break;end if (v73==(1819 -(1703 + 114))) then v45.BackgroundColor3=Color3.fromRGB(901 -(376 + 325) ,81 -31 ,153 -103 );v34.Text="Status: Farming...";v73=3;end if (v73==(0 + 0)) then if v3 then return;end v3=true;v73=2 -1 ;end end break;end end end 
+    local function v64() local v72=0;local v73;while true do if (v72==(0 -0)) then v73=0;while true do if (3==v73) then v34.TextColor3=Color3.fromRGB(100,3 + 252 ,79 + 21 );print("Farm started");v73=1059 -(87 + 968) ;end if (v73==(4 -3)) then v4=v2.Position;v45.Text="⏹ STOP";v73=2 + 0 ;end if ((8 -4)==v73) then v5=task.spawn(function() while v3 do if v7() then task.wait(1413.5 -(447 + 966) );end -- v8() KALDIRILDI; task.wait(2 -1 );end end);break;end if (v73==(1819 -(1703 + 114))) then v45.BackgroundColor3=Color3.fromRGB(901 -(376 + 325) ,81 -31 ,153 -103 );v34.Text="Status: Farming...";v73=3;end if (v73==(0 + 0)) then if v3 then return;end v3=true;v73=2 -1 ;end end break;end end end 
     local function v65() v3=false;if v5 then task.cancel(v5);v5=nil;end v45.Text="▶ START";v45.BackgroundColor3=Color3.fromRGB(0 + 0 ,1380 -(1123 + 57) ,0);v34.Text="Status: Stopped";v34.TextColor3=Color3.fromRGB(200,163 + 37 ,200);print("Farm stopped");end 
 
     v45.MouseButton1Click:Connect(function() if v3 then v65();else v64();end end);
@@ -123,6 +128,7 @@ local function ShowKeySystem()
     end)
 end
 
+-- [2] EN SONDA ÇALIŞTIRMA İŞLEMLERİ
 local TipGui = Instance.new("ScreenGui")
 TipGui.Name = "TipScreen"
 TipGui.Parent = v0:WaitForChild("PlayerGui")

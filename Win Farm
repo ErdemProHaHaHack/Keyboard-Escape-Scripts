@@ -1,0 +1,178 @@
+--[[ 
+    REWARD FARMER - Optimized & Modernized
+    F4: Start/Stop | F6: Hide/Show UI
+]]
+
+local Player = game.Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+-- Variables
+local character = Player.Character or Player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+local isFarming = false
+local savedPosition = rootPart.Position
+local farmThread = nil
+
+-- Update character reference on respawn (Fixes the "breaking on death" issue)
+Player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+    rootPart = newChar:WaitForChild("HumanoidRootPart")
+end)
+
+-- Search for reward parts
+local function findReward()
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            local name = obj.Name:lower()
+            if name:find("reward") or name:find("bonus") or name:find("chest") or 
+               name:find("win") or name:find("prize") or name:find("collect") or name:find("250k") then
+                return obj
+            end
+        end
+    end
+    return nil
+end
+
+-- Teleport Logic
+local function teleportToReward()
+    local target = findReward()
+    if target then
+        rootPart.CFrame = CFrame.new(target.Position + Vector3.new(0, 2, 0))
+        return true
+    end
+    return false
+end
+
+local function teleportBack()
+    rootPart.CFrame = CFrame.new(savedPosition)
+end
+
+-- UI DESIGN
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ModernFarmGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 250, 0, 160)
+MainFrame.Position = UDim2.new(0.5, -125, 0.4, -80)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Thickness = 2
+UIStroke.Color = Color3.fromRGB(60, 60, 80)
+UIStroke.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+Title.Text = "⚡ WIN FARMER"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+Title.Font = Enum.Font.GothamBold
+Title.Parent = MainFrame
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 10)
+TitleCorner.Parent = Title
+
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(1, 0, 0, 30)
+StatusLabel.Position = UDim2.new(0, 0, 0, 50)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = "Status: Stopped"
+StatusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+StatusLabel.TextSize = 14
+StatusLabel.Font = Enum.Font.Gotham
+StatusLabel.Parent = MainFrame
+
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 120, 0, 40)
+ToggleBtn.Position = UDim2.new(0.5, -60, 0, 90)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 100)
+ToggleBtn.Text = "START"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.TextSize = 16
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.Parent = MainFrame
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 8)
+BtnCorner.Parent = ToggleBtn
+
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Size = UDim2.new(1, 0, 0, 20)
+InfoLabel.Position = UDim2.new(0, 0, 0, 130)
+InfoLabel.BackgroundTransparency = 1
+InfoLabel.Text = "F4: Toggle | F6: Hide UI"
+InfoLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+InfoLabel.TextSize = 12
+InfoLabel.Font = Enum.Font.Gotham
+InfoLabel.Parent = MainFrame
+
+-- Logic Functions
+local function stopFarm()
+    isFarming = false
+    if farmThread then 
+        task.cancel(farmThread) 
+        farmThread = nil 
+    end
+    ToggleBtn.Text = "START"
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 100)
+    StatusLabel.Text = "Status: Stopped"
+    StatusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    print("Farm Stopped.")
+end
+
+local function startFarm()
+    if isFarming then return end
+    isFarming = true
+    savedPosition = rootPart.Position
+    
+    ToggleBtn.Text = "STOP"
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+    StatusLabel.Text = "Status: Farming..."
+    StatusLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
+    print("Farm Started.")
+    
+    farmThread = task.spawn(function()
+        while isFarming do
+            if teleportToReward() then
+                task.wait(0.5) -- Wait at reward
+            end
+            teleportBack()
+            task.wait(1) -- Wait before next search
+        end
+    end)
+end
+
+-- Button Event
+ToggleBtn.MouseButton1Click:Connect(function()
+    if isFarming then
+        stopFarm()
+    else
+        startFarm()
+    end
+end)
+
+-- Hotkeys
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.F6 then
+        MainFrame.Visible = not MainFrame.Visible
+    elseif input.KeyCode == Enum.KeyCode.F4 then
+        if isFarming then stopFarm() else startFarm() end
+    end
+end)
+
+print("Modern Reward Farm Loaded Successfully!")
